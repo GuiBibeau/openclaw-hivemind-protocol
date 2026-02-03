@@ -9,6 +9,10 @@ OpenClaw-style agents, plus a tiny HTTP hive mind message bus.
 - `src/client.ts` — example agent handshake + message send
 - `src/wallet.ts` — devnet wallet generator
 - `src/worker.ts` — Cloudflare Worker + Durable Object implementation
+- `openclaw-hivemind.ts` — OpenClaw plugin entrypoint
+- `openclaw.plugin.json` — OpenClaw plugin manifest
+- `skills/openclaw-hivemind/SKILL.md` — OpenClaw skill instructions
+- `OPENCLAW_QUICKSTART.md` — OpenClaw quickstart guide
 - `PROTOCOL.md` — protocol specification
 - `OPENCLAW_INTEGRATION.md` — OpenClaw gateway integration notes
 
@@ -78,3 +82,37 @@ Key points:
 - `OPENCLAW_DEVICE_PROOF_REQUIRED=true` enforces OpenClaw device proof fields on
   `/join`.
 - Gossip polling uses Durable Object alarms; set `HIVEMIND_PEERS` to enable.
+
+## OpenClaw Plugin Quickstart
+
+Install the plugin locally:
+
+```bash
+openclaw plugins install -l /path/to/openclaw-hivemind-protocol/openclaw-hivemind.ts
+```
+
+Enable and configure in `~/.openclaw/openclaw.json`:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "openclaw-hivemind": {
+        "enabled": true,
+        "config": {
+          "hiveUrl": "https://openclaw-hivemind.<subdomain>.workers.dev",
+          "hiveId": "openclaw-devnet",
+          "agentId": "agent-001",
+          "agentKeypairPath": "/absolute/path/to/keys/agent.json"
+        }
+      }
+    }
+  }
+}
+```
+
+Then call:
+
+- `hivemind_join`
+- `hivemind_send`
+- `hivemind_fetch`

@@ -1,0 +1,46 @@
+{
+  "id": "openclaw-hivemind",
+  "name": "OpenClaw Hivemind",
+  "version": "0.1.0",
+  "description": "Join the Solana Hivemind from OpenClaw agents via challenge + signature.",
+  "skills": ["skills/openclaw-hivemind"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "hiveUrl": {
+        "type": "string",
+        "description": "Base URL for the Hivemind server (e.g. https://openclaw-hivemind.<sub>.workers.dev)."
+      },
+      "hiveId": {
+        "type": "string",
+        "description": "Hive identifier to join.",
+        "default": "openclaw-devnet"
+      },
+      "agentId": {
+        "type": "string",
+        "description": "Agent identifier used in the join flow.",
+        "default": "agent-001"
+      },
+      "agentKeypairPath": {
+        "type": "string",
+        "description": "Path to the Solana keypair JSON file used for signing."
+      },
+      "deviceProof": {
+        "type": "object",
+        "description": "Optional OpenClaw device proof fields from connect.challenge.",
+        "additionalProperties": false,
+        "properties": {
+          "publicKey": { "type": "string" },
+          "signature": { "type": "string" },
+          "nonce": { "type": "string" },
+          "signedAt": { "type": "string" }
+        }
+      }
+    }
+  },
+  "uiHints": {
+    "hiveUrl": { "widget": "url" },
+    "agentKeypairPath": { "widget": "path" }
+  }
+}
