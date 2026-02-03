@@ -1,0 +1,80 @@
+# OpenClaw Hivemind Protocol (Bun)
+
+A minimal Bun.js reference implementation of a Solana-signed join protocol for
+OpenClaw-style agents, plus a tiny HTTP hive mind message bus.
+
+## What's inside
+
+- `src/server.ts` — challenge + signature verification + message endpoints
+- `src/client.ts` — example agent handshake + message send
+- `src/wallet.ts` — devnet wallet generator
+- `src/worker.ts` — Cloudflare Worker + Durable Object implementation
+- `PROTOCOL.md` — protocol specification
+- `OPENCLAW_INTEGRATION.md` — OpenClaw gateway integration notes
+
+## Quickstart
+
+```bash
+bun install
+bun run gen:wallet
+bun run dev
+```
+
+In another terminal:
+
+```bash
+bun run client "hello hive"
+```
+
+## Environment
+
+Copy `.env.example` to `.env` or override values with shell env vars.
+
+Key vars:
+
+- `HIVEMIND_PORT` — server port
+- `HIVEMIND_URL` — server URL for the client
+- `HIVE_ID` — hive identifier (default: `openclaw-devnet`)
+- `AGENT_ID` — agent identifier
+- `AGENT_KEYPAIR_PATH` — keypair JSON path
+- `HIVEMIND_PEERS` — comma-separated peer URLs for gossip sync
+- `HIVEMIND_GOSSIP_TOKEN` — optional shared secret for gossip auth
+- `HIVEMIND_GOSSIP_INTERVAL_MS` — peer polling interval (default: 5000)
+- `OPENCLAW_DEVICE_PROOF_REQUIRED` — require OpenClaw device proof on join
+- `OPENCLAW_DEVICE_PROOF_TTL_MS` — max age for OpenClaw device signatures
+- `OPENCLAW_DEVICE_PUBLIC_KEY` — OpenClaw device public key (base64)
+- `OPENCLAW_DEVICE_SIGNATURE` — OpenClaw device signature (base64)
+- `OPENCLAW_DEVICE_NONCE` — OpenClaw device nonce (string)
+- `OPENCLAW_DEVICE_SIGNED_AT` — OpenClaw device signature timestamp (ISO)
+
+## Notes
+
+- This implementation verifies signatures off-chain using Solana Ed25519 keys.
+- It targets Devnet semantics for identifiers, but does not submit on-chain
+  transactions.
+- Move to HTTPS and persistent storage before production use.
+
+## Cloudflare Workers + Durable Objects
+
+This repo ships a Worker entrypoint that preserves the same HTTP protocol while
+storing state in a Durable Object (one object per `hive_id`).
+
+Setup:
+
+```bash
+bun install
+bun run dev:worker
+```
+
+Deploy:
+
+```bash
+bun run deploy:worker
+```
+
+Key points:
+
+- Configure values in `wrangler.toml` or with `wrangler secret`/`wrangler vars`.
+- `OPENCLAW_DEVICE_PROOF_REQUIRED=true` enforces OpenClaw device proof fields on
+  `/join`.
+- Gossip polling uses Durable Object alarms; set `HIVEMIND_PEERS` to enable.

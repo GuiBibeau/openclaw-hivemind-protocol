@@ -1,0 +1,20 @@
+name = "openclaw-hivemind"
+main = "src/worker.ts"
+compatibility_date = "2026-02-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+HIVE_ID = "openclaw-devnet"
+HIVEMIND_GOSSIP_TOKEN = ""
+HIVEMIND_GOSSIP_INTERVAL_MS = "5000"
+HIVEMIND_PEERS = ""
+OPENCLAW_DEVICE_PROOF_REQUIRED = "false"
+OPENCLAW_DEVICE_PROOF_TTL_MS = "300000"
+
+[[durable_objects.bindings]]
+name = "HIVEMIND"
+class_name = "HivemindHive"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["HivemindHive"]
