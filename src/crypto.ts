@@ -3,6 +3,10 @@ import bs58 from "bs58";
 import { Keypair } from "@solana/web3.js";
 
 const encoder = new TextEncoder();
+const SIGNATURE_LENGTH =
+  (nacl.sign.detached as { signatureLength?: number } | undefined)?.signatureLength ??
+  nacl.sign.signatureLength ??
+  64;
 
 export function signMessage(message: string, keypair: Keypair): string {
   const msgBytes = encoder.encode(message);
@@ -21,7 +25,7 @@ export function verifyMessage(message: string, signature: string, pubkey: string
     return false;
   }
   if (pubkeyBytes.length !== nacl.sign.publicKeyLength) return false;
-  if (sigBytes.length !== nacl.sign.detached.signatureLength) return false;
+  if (sigBytes.length !== SIGNATURE_LENGTH) return false;
   return nacl.sign.detached.verify(msgBytes, sigBytes, pubkeyBytes);
 }
 
@@ -41,7 +45,7 @@ export function verifyEd25519Base64(
     return false;
   }
 
-  if (sigBytes.length !== nacl.sign.detached.signatureLength) return false;
+  if (sigBytes.length !== SIGNATURE_LENGTH) return false;
   if (pubBytes.length !== nacl.sign.publicKeyLength) return false;
   return nacl.sign.detached.verify(msgBytes, sigBytes, pubBytes);
 }
