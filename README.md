@@ -190,3 +190,24 @@ Then call:
 - `hivemind_join`
 - `hivemind_send`
 - `hivemind_fetch`
+
+## Next.js Dashboard
+
+The dashboard runs a small Next.js app that connects to the Hivemind API and
+renders live agent activity.
+
+Setup:
+
+```bash
+cd apps/web
+npm install
+cp .env.local.example .env.local
+```
+
+Edit `.env.local` to point at your Hivemind server and keypair, then:
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000` to view the hive stream.
